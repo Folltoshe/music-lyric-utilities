@@ -7,7 +7,7 @@
   "types": "./dist/types/index.d.ts",
   "scripts": {
     "dev": "nodemon",
-    "build": "rimraf dist && vite build && tsc --emitDeclarationOnly"
+    "build": "rimraf dist && vite build && tsc --emitDeclarationOnly && tsc-alias"
   },
   "exports": {
     "./package.json": "./package.json",
@@ -51,7 +51,7 @@
     "nodemon": "^3.1.0",
     "rimraf": "^5.0.7",
     "ts-node": "^10.9.1",
-    "tsc-alias": "^1.8.8",
+    "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.3",
     "vite": "^5.4.11"

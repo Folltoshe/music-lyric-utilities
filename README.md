@@ -55,9 +55,9 @@ lyricPlayer.play(0)
 
 ```html
 <script>
-  const { Parser, Player } = MusicLyricUtilities
+  const { LyricParser, LyricPlayer } = MusicLyricUtilities
 
-  const lyricParser = new Parser.LyricParser()
+  const lyricParser = new LyricParser()
   const lyricInfo = lyricParser.parse({
     original: '',
     translated: '',
@@ -65,7 +65,7 @@ lyricPlayer.play(0)
     dynamic: '',
   })
 
-  const player = new Player.LyricPlayer({
+  const player = new LyricPlayer({
     onSetLyric(info) {
       console.log('onSetLyric', info)
     },

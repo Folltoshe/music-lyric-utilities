@@ -49,9 +49,9 @@
         dynamic: '',
       },
     }
-    const { Parser, Player } = MusicLyricUtilities
+    const { LyricParser, LyricPlayer } = MusicLyricUtilities
 
-    const lyricParser = new Parser.LyricParser()
+    const lyricParser = new LyricParser()
     const lyricInfo = lyricParser.parse({
       original: ExampleLyric.one.original,
       translated: ExampleLyric.one.translated,
@@ -59,7 +59,7 @@
       dynamic: ExampleLyric.one.dynamic,
     })
 
-    const player = new Player.LyricPlayer({
+    const player = new LyricPlayer({
       onSetLyric(info) {
         console.log('onSetLyric', info)
       },

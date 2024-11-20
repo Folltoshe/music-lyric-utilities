@@ -1,7 +1,7 @@
-import { Parser, Player } from '../src'
+import { LyricParser, LyricPlayer } from '../src'
 import ExampleLyric from './lyric.json'
 
-const lyricParser = new Parser.LyricParser()
+const lyricParser = new LyricParser()
 const lyricInfo = lyricParser.parse({
   original: ExampleLyric.one.original,
   translated: ExampleLyric.one.translated,
@@ -9,7 +9,7 @@ const lyricInfo = lyricParser.parse({
   dynamic: ExampleLyric.one.dynamic,
 })
 
-const player = new Player.LyricPlayer({
+const player = new LyricPlayer({
   onSetLyric(info) {
     console.log('onSetLyric', info)
   },

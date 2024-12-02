@@ -95,7 +95,7 @@ const preProcessDynamicLyric = (lyric: string) => {
       // 某些单词内容为空格，给上一个单词补一个空格
       if (!word.trim()) {
         const lastWord = words[words.length - 1]
-        lastWord.text += ' '
+        lastWord && (lastWord.text += ' ')
         continue
       }
 

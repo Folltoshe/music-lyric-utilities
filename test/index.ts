@@ -3,10 +3,10 @@ import ExampleLyric from './lyric.json'
 
 const lyricParser = new LyricParser()
 const lyricInfo = lyricParser.parse({
-  original: ExampleLyric.one.original,
-  translated: ExampleLyric.one.translated,
-  roman: ExampleLyric.one.roman,
-  dynamic: ExampleLyric.one.dynamic,
+  original: ExampleLyric.two.original,
+  translated: ExampleLyric.two.translated,
+  roman: ExampleLyric.two.roman,
+  dynamic: ExampleLyric.two.dynamic,
 })
 
 const player = new LyricPlayer({

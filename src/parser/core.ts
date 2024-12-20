@@ -170,30 +170,30 @@ const processLyric = (lines: LyricLine[]): LyricLine[] => {
   //   return PURE_MUSIC_LYRIC_LINE
   // }
 
-  const result: LyricLine[] = []
+  const processed: LyricLine[] = []
 
   let isSpace = false
   lines.forEach((current, i) => {
     if (current.content.original.trim().length === 0) {
       const next = lines[i + 1]
       if (next && next.time - current.time > 5000 && !isSpace) {
-        result.push(current)
+        processed.push(current)
         isSpace = true
       }
     } else {
       isSpace = false
-      result.push(current)
+      processed.push(current)
     }
   })
 
-  while (result[0]?.content.original.length === 0) {
-    result.shift()
+  while (processed[0]?.content.original.length === 0) {
+    processed.shift()
   }
 
-  if (result[0]?.time > 5000) {
-    result.unshift({
+  if (processed[0]?.time > 5000) {
+    processed.unshift({
       time: 500,
-      duration: result[0]?.time - 500,
+      duration: processed[0]?.time - 500,
       content: { original: '' },
       config: {
         isInterlude: true,
@@ -202,8 +202,8 @@ const processLyric = (lines: LyricLine[]): LyricLine[] => {
     })
   }
 
-  for (let i = 0; i < result.length; i++) {
-    const current = result[i]
+  for (let i = 0; i < processed.length; i++) {
+    const current = processed[i]
     // 标记原文为空的句子为间奏
     if (current.content.original.length === 0) current.config.isInterlude = true
     // 在英文句子中转化中文引号到英文分割号，中文标点到英文标点
@@ -215,6 +215,30 @@ const processLyric = (lines: LyricLine[]): LyricLine[] => {
     }
     if (current?.content.original) {
       current.content.original = replaceChineseSymbolsToEnglish(current.content.original)
+    }
+  }
+
+  const result: LyricLine[] = [...processed]
+  for (let i = 0; i < processed.length; i++) {
+    const current = processed[i]
+    const next = processed[i + 1]
+    if (!next) continue
+    const endTime = current.time + current.duration
+    // 大于16s标记为间奏
+    if (next.time - endTime > 16000) {
+      // 延迟100ms
+      const startTime = endTime + 100
+      result.splice(i + 1, 0, {
+        time: startTime,
+        duration: Math.max(next.time - startTime - 100, 0),
+        content: {
+          original: '',
+        },
+        config: {
+          isInterlude: true,
+          isNotSupportAutoScrollTip: false,
+        },
+      })
     }
   }
 

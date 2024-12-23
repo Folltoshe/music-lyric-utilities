@@ -1,5 +1,13 @@
 import Lodash from 'lodash'
-import type { LyricInfo, LyricLine, DynamicWordInfo, PureLyricInfo, ParseLyricProps } from './types'
+import type {
+  LyricInfo,
+  LyricLine,
+  DynamicWordInfo,
+  PureLyricInfo,
+  ParseLyricProps,
+  ParserOptions,
+  RequiredParserOptions,
+} from './types'
 import { EMPTY_DYNAMIC_WORD, EMPTY_LYRIC_LINE } from './constant'
 import { calcSimularity, isEnglishSentense, replaceChineseSymbolsToEnglish } from '@root/utils'
 
@@ -248,10 +256,10 @@ const processLyric = (lines: LyricLine[]): LyricLine[] => {
 }
 
 export class LyricParser {
-  private isShowNotSupportAutoScrollTipLine: boolean
+  private options: RequiredParserOptions
 
-  constructor(isShowNotSupportAutoScrollTipLine = false) {
-    this.isShowNotSupportAutoScrollTipLine = isShowNotSupportAutoScrollTipLine
+  constructor({ isShowNotSupportAutoScrollTipLine = false }: ParserOptions) {
+    this.options = { isShowNotSupportAutoScrollTipLine }
   }
 
   private parseDynamicLyric({ original = '', translated = '', roman = '', dynamic = '' }: ParseLyricProps) {
@@ -438,7 +446,7 @@ export class LyricParser {
 
     const result: LyricInfo = { ...preInfo }
     result.lines = processLyric(preInfo.lines)
-    if (!result.config.canAutoScroll && this.isShowNotSupportAutoScrollTipLine) {
+    if (!result.config.canAutoScroll && this.options.isShowNotSupportAutoScrollTipLine) {
       const line = Lodash.merge(EMPTY_LYRIC_LINE, { config: { isNotSupportAutoScrollTip: true } })
       result.lines.unshift(line)
     }

@@ -1,3 +1,11 @@
+export interface ParserOptions {
+  /**
+   * Whether to add a prompt line that does not support automatic scrolling
+   */
+  isShowNotSupportAutoScrollTipLine?: boolean
+}
+export type RequiredParserOptions = Required<ParserOptions>
+
 export interface ParseLyricProps {
   original?: string
   translated?: string

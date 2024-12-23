@@ -149,10 +149,12 @@ const preProcessDynamicLyric = (lyric: string) => {
       })
     }
 
+    // 取第一个单词的开始时间，如果没有再解析时间标签
+    const time = words[0]?.time ?? timestamp
     result.push({
-      time: timestamp,
+      time: time,
       duration: words.map(v => v.duration).reduce((a, b) => a + b, 0),
-      content: { original: words.map(v => v.text).join(''), dynamic: { time: timestamp, words } },
+      content: { original: words.map(v => v.text).join(''), dynamic: { time, words } },
       config: {
         isInterlude: false,
         isNotSupportAutoScrollTip: false,

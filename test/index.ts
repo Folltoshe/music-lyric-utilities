@@ -11,7 +11,7 @@ const lyricInfo = lyricParser.parse({
 
 const player = new LyricPlayer({
   onSetLyric(info) {
-    console.log('onSetLyric', info)
+    console.log('onSetLyric', JSON.stringify(info))
   },
   onLinePlay(lineNum, info) {
     console.log('onLinePlay', lineNum, info)

@@ -8,7 +8,7 @@ import type {
   ParserOptions,
   RequiredParserOptions,
 } from './types'
-import { EMPTY_DYNAMIC_WORD, EMPTY_LYRIC_LINE } from './constant'
+import { DEFAULT_PARSER_OPTIONS, EMPTY_DYNAMIC_WORD, EMPTY_LYRIC_LINE } from './constant'
 import { calcSimularity, isEnglishSentense, replaceChineseSymbolsToEnglish } from '@root/utils'
 
 const REGEXP = {
@@ -114,50 +114,26 @@ const preProcessDynamicLyric = (lyric: string) => {
         .filter(v => v.trim().length > 0)
       const splitedDuration = wordDuration / splited.length
       splited.forEach((subWord, i) => {
+        const subWordTime = wordTime + i * splitedDuration
+        const subWordDuration = splitedDuration
+        let subWordText
         if (i === splited.length - 1) {
-          if (/\s/.test((word ?? '')[(word ?? '').length - 1])) {
-            words.push({
-              time: wordTime + i * splitedDuration,
-              duration: splitedDuration,
-              text: `${subWord.trimStart()} `,
-              config: EMPTY_DYNAMIC_WORD['config'],
-            })
-          } else {
-            words.push({
-              time: wordTime + i * splitedDuration,
-              duration: splitedDuration,
-              text: subWord.trimStart(),
-              config: EMPTY_DYNAMIC_WORD['config'],
-            })
-          }
+          if (/\s/.test((word ?? '')[(word ?? '').length - 1])) subWordText = `${subWord.trimStart()} `
+          else subWordText = subWord.trimStart()
         } else if (i === 0) {
-          if (/\s/.test((word ?? '')[0])) {
-            words.push({
-              time: wordTime + i * splitedDuration,
-              duration: splitedDuration,
-              text: ` ${subWord.trimStart()}`,
-              config: EMPTY_DYNAMIC_WORD['config'],
-            })
-          } else {
-            words.push({
-              time: wordTime + i * splitedDuration,
-              duration: splitedDuration,
-              text: subWord.trimStart(),
-              config: EMPTY_DYNAMIC_WORD['config'],
-            })
-          }
-        } else {
-          words.push({
-            time: wordTime + i * splitedDuration,
-            duration: splitedDuration,
-            text: `${subWord.trimStart()} `,
-            config: EMPTY_DYNAMIC_WORD['config'],
-          })
-        }
+          if (/\s/.test((word ?? '')[0])) subWordText = ` ${subWord.trimStart()}`
+          else subWordText = subWord.trimStart()
+        } else subWordText = `${subWord.trimStart()} `
+        words.push({
+          time: subWordTime,
+          duration: subWordDuration,
+          text: subWordText,
+          config: EMPTY_DYNAMIC_WORD['config'],
+        })
       })
     }
 
-    // 取第一个单词的开始时间，如果没有再解析时间标签
+    // 取第一个单词的开始时间，如果没有再使用时间标签
     const time = words[0]?.time ?? timestamp
     result.push({
       time: time,
@@ -258,8 +234,8 @@ const processLyric = (lines: LyricLine[]): LyricLine[] => {
 export class LyricParser {
   private options: RequiredParserOptions
 
-  constructor({ isShowNotSupportAutoScrollTipLine = false }: ParserOptions) {
-    this.options = { isShowNotSupportAutoScrollTipLine }
+  constructor(opt?: ParserOptions) {
+    this.options = Lodash.merge(DEFAULT_PARSER_OPTIONS, opt)
   }
 
   private parseDynamicLyric({ original = '', translated = '', roman = '', dynamic = '' }: ParseLyricProps) {

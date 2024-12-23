@@ -1,4 +1,8 @@
-import type { LyricInfo, LyricLine, DynamicWordInfo } from './types'
+import type { LyricInfo, LyricLine, DynamicWordInfo, RequiredParserOptions } from './types'
+
+export const DEFAULT_PARSER_OPTIONS: RequiredParserOptions = {
+  isShowNotSupportAutoScrollTipLine: false,
+}
 
 export const PURE_MUSIC_LYRIC_LINE: LyricLine[] = [
   {

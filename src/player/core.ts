@@ -1,4 +1,4 @@
-import { EMPTY_LYRIC_INFO, type LyricInfo, type LyricLine } from '@root/parser'
+import { EMPTY_LYRIC_INFO, type LyricInfo } from '@root/parser'
 import { TimeoutTools, handleGetNow, EMPTY_CALLBACK } from '@root/utils'
 import type { RequiredPlayerOptions, PlayerOptions } from './types'
 

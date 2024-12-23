@@ -7,7 +7,7 @@
   "types": "./dist/types/index.d.ts",
   "scripts": {
     "dev": "nodemon",
-    "build": "rimraf dist && vite build && tsc --emitDeclarationOnly && tsc-alias"
+    "build": "rimraf dist && vite build && tsc --emitDeclarationOnly --project tsconfig.build.json && tsc-alias --project tsconfig.build.json"
   },
   "exports": {
     "./package.json": "./package.json",

@@ -1,3 +1,5 @@
+import { Functions } from '@root/variable'
+
 export const EMPTY_CALLBACK = () => {}
 
 export const isEnglishSentense = (str: string) => {
@@ -21,24 +23,17 @@ export const replaceChineseSymbolsToEnglish = (str: string) => {
   return str
 }
 
-const timeFunction = typeof performance.now === 'function' ? performance.now.bind(performance) : Date.now.bind(Date)
-export const handleGetNow = () => timeFunction()
-
-const requestAnimationFrameFunc = globalThis.requestAnimationFrame ?? globalThis.setTimeout
-export const handleRequestAnimationFrame = (callback: FrameRequestCallback) => requestAnimationFrameFunc(callback)
-
-const cancelRequestAnimationFrameFunc = globalThis.cancelAnimationFrame ?? globalThis.clearTimeout
-export const handleCancelAnimationFrame = (id: number) => cancelRequestAnimationFrameFunc(id)
+export const handleGetNow = () => Functions.Time.now()
 
 export class TimeoutTools {
   private invokeTime: number = 0
   private animationFrameId: number | null = null
-  private timeoutId: null | ReturnType<typeof globalThis.setTimeout> = null
+  private timeoutId: null | ReturnType<typeof Functions.Time.setTimeout> = null
   private callback: ((diff: number) => void) | null = null
   private thresholdTime: number = 200
 
   private run() {
-    this.animationFrameId = handleRequestAnimationFrame(() => {
+    this.animationFrameId = Functions.Animation.requestAnimationFrame(() => {
       this.animationFrameId = null
       let diff = this.invokeTime - handleGetNow()
       if (diff > 0) {
@@ -46,7 +41,7 @@ export class TimeoutTools {
           this.run()
           return
         }
-        this.timeoutId = globalThis.setTimeout(() => {
+        this.timeoutId = Functions.Time.setTimeout(() => {
           this.timeoutId = null
           this.run()
         }, diff - this.thresholdTime)
@@ -65,11 +60,11 @@ export class TimeoutTools {
 
   clear() {
     if (this.animationFrameId) {
-      handleCancelAnimationFrame(this.animationFrameId)
+      Functions.Animation.cancelAnimationFrame(this.animationFrameId)
       this.animationFrameId = null
     }
     if (this.timeoutId) {
-      globalThis.clearTimeout(this.timeoutId)
+      Functions.Time.clearTimeout(this.timeoutId)
       this.timeoutId = null
     }
     this.callback = null

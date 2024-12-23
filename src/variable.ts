@@ -13,17 +13,17 @@ export interface FunctionsType {
 }
 export const Functions: FunctionsType = {
   Time: {
-    setTimeout: globalThis.setTimeout,
-    clearTimeout: globalThis.clearTimeout,
-    setInterval: globalThis.setInterval,
-    clearInterval: globalThis.clearInterval,
+    setTimeout: globalThis.setTimeout.bind(globalThis),
+    clearTimeout: globalThis.clearTimeout.bind(globalThis),
+    setInterval: globalThis.setInterval.bind(globalThis),
+    clearInterval: globalThis.clearInterval.bind(globalThis),
     now:
       typeof globalThis?.performance?.now === 'function'
         ? globalThis.performance.now.bind(globalThis.performance)
         : globalThis.Date.now.bind(globalThis.Date),
   },
   Animation: {
-    requestAnimationFrame: globalThis.requestAnimationFrame ?? globalThis.setTimeout,
-    cancelAnimationFrame: globalThis.cancelAnimationFrame ?? globalThis.clearTimeout,
+    requestAnimationFrame: globalThis.requestAnimationFrame.bind(globalThis) ?? globalThis.setTimeout.bind(globalThis),
+    cancelAnimationFrame: globalThis.cancelAnimationFrame.bind(globalThis) ?? globalThis.clearTimeout.bind(globalThis),
   },
 }

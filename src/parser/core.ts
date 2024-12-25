@@ -199,38 +199,37 @@ const processLyric = (lines: LyricLine[], mode: 'normal' | 'dynamic'): LyricLine
     }
   }
 
+  const result: LyricLine[] = [...processed]
   switch (mode) {
     case 'normal':
       for (let i = 0; i < processed.length; i++) {
-        if (i < processed.length - 1) {
-          processed[i].duration = processed[i + 1].time - processed[i].time
+        if (i < processed.length - 1) result[i].duration = result[i + 1].time - result[i].time
+      }
+      break
+    case 'dynamic':
+      for (let i = 0; i < processed.length; i++) {
+        const current = processed[i]
+        const next = processed[i + 1]
+        if (!next) continue
+        const endTime = current.time + current.duration
+        // 大于16s标记为间奏
+        if (next.time - endTime > 16000) {
+          // 延迟100ms
+          const startTime = endTime + 100
+          result.push({
+            time: startTime,
+            duration: Math.max(next.time - startTime - 100, 0),
+            content: {
+              original: '',
+            },
+            config: {
+              isInterlude: true,
+              isNotSupportAutoScrollTip: false,
+            },
+          })
         }
       }
       break
-  }
-
-  const result: LyricLine[] = [...processed]
-  for (let i = 0; i < processed.length; i++) {
-    const current = processed[i]
-    const next = processed[i + 1]
-    if (!next) continue
-    const endTime = current.time + current.duration
-    // 大于16s标记为间奏
-    if (next.time - endTime > 16000) {
-      // 延迟100ms
-      const startTime = endTime + 100
-      result.splice(i + 1, 0, {
-        time: startTime,
-        duration: Math.max(next.time - startTime - 100, 0),
-        content: {
-          original: '',
-        },
-        config: {
-          isInterlude: true,
-          isNotSupportAutoScrollTip: false,
-        },
-      })
-    }
   }
 
   return result.sort((a, b) => a.time - b.time)

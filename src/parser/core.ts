@@ -149,13 +149,8 @@ const preProcessDynamicLyric = (lyric: string) => {
   return result.sort((a, b) => a.time - b.time)
 }
 
-// 处理歌词，去除一些太短的空格间曲段，并为前摇太长的歌曲加前导空格
-const processLyric = (lines: LyricLine[]): LyricLine[] => {
-  // if (lyric.length > 0 && lyric[lyric.length - 1].time === 5940000 && lyric[lyric.length - 1].duration === 0) {
-  //   // 纯音乐
-  //   return PURE_MUSIC_LYRIC_LINE
-  // }
-
+// 最后一次处理歌词，去除一些太短的空格间曲段，并为前摇太长的歌曲加前导空格
+const processLyric = (lines: LyricLine[], mode: 'normal' | 'dynamic'): LyricLine[] => {
   const processed: LyricLine[] = []
 
   let isSpace = false
@@ -204,6 +199,16 @@ const processLyric = (lines: LyricLine[]): LyricLine[] => {
     }
   }
 
+  switch (mode) {
+    case 'normal':
+      for (let i = 0; i < processed.length; i++) {
+        if (i < processed.length - 1) {
+          processed[i].duration = processed[i + 1].time - processed[i].time
+        }
+      }
+      break
+  }
+
   const result: LyricLine[] = [...processed]
   for (let i = 0; i < processed.length; i++) {
     const current = processed[i]
@@ -228,7 +233,7 @@ const processLyric = (lines: LyricLine[]): LyricLine[] => {
     }
   }
 
-  return result
+  return result.sort((a, b) => a.time - b.time)
 }
 
 export class LyricParser {
@@ -371,7 +376,7 @@ export class LyricParser {
     }
 
     const result: LyricInfo = {
-      lines: processLyric(preDynamic),
+      lines: processLyric(preDynamic, 'dynamic'),
       config: {
         canAutoScroll: preOriginal.canAutoScroll,
         isPureMusic: false,
@@ -411,17 +416,8 @@ export class LyricParser {
       if (target) target.content.roman = line.lyric
     })
 
-    preInfo.lines.sort((a, b) => a.time - b.time)
-
-    const processedLyric = processLyric(preInfo.lines)
-    for (let i = 0; i < processedLyric.length; i++) {
-      if (i < processedLyric.length - 1) {
-        processedLyric[i].duration = processedLyric[i + 1].time - processedLyric[i].time
-      }
-    }
-
     const result: LyricInfo = { ...preInfo }
-    result.lines = processLyric(preInfo.lines)
+    result.lines = processLyric(preInfo.lines, 'normal')
     if (!result.config.canAutoScroll && this.options.isShowNotSupportAutoScrollTipLine) {
       const line = Lodash.merge(EMPTY_LYRIC_LINE, { config: { isNotSupportAutoScrollTip: true } })
       result.lines.unshift(line)

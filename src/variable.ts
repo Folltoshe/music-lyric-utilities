@@ -23,7 +23,11 @@ export const Functions: FunctionsType = {
         : globalThis.Date.now.bind(globalThis.Date),
   },
   Animation: {
-    requestAnimationFrame: globalThis.requestAnimationFrame.bind(globalThis) ?? globalThis.setTimeout.bind(globalThis),
-    cancelAnimationFrame: globalThis.cancelAnimationFrame.bind(globalThis) ?? globalThis.clearTimeout.bind(globalThis),
+    requestAnimationFrame: globalThis.requestAnimationFrame
+      ? globalThis.requestAnimationFrame.bind(globalThis)
+      : globalThis.setTimeout.bind(globalThis),
+    cancelAnimationFrame: globalThis.cancelAnimationFrame
+      ? globalThis.cancelAnimationFrame.bind(globalThis)
+      : globalThis.clearTimeout.bind(globalThis),
   },
 }
